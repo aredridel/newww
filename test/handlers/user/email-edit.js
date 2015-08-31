@@ -10,14 +10,11 @@ var generateCrumb = require("../crumb"),
   expect = Code.expect,
   nock = require("nock"),
   _ = require('lodash'),
-  redis = require('redis'),
-  spawn = require('child_process').spawn,
   fixtures = require('../../fixtures'),
   users = fixtures.users,
   emails = fixtures.email_edit;
 
 var server, cookieCrumb,
-  client, redisProcess,
   newEmail = 'new@boom.me',
   oldEmail = users.bob.email;
 
@@ -41,24 +38,9 @@ before(function(done) {
   });
 });
 
-before(function(done) {
-  redisProcess = spawn('redis-server');
-  client = require("redis-url").connect();
-  client.on("error", function(err) {
-    console.log("Error " + err);
-  });
-
-  server.app.cache._cache.connection.client = client;
-
-  done();
-});
-
 after(function(done) {
-  client.flushdb();
-  server.stop(function() {
-    redisProcess.kill('SIGKILL');
-    done();
-  });
+  server.mockRedisClient.flushdb();
+  done();
 });
 
 describe('Accessing the email-edit page', function() {
@@ -488,8 +470,8 @@ function setEmailHashesInRedis(cb) {
     hash: revHash
   });
 
-  client.set(revKey, JSON.stringify(revData), function(err) {
-    client.set(confKey, JSON.stringify(confData), function(err) {
+  server.mockRedisClient.set(revKey, JSON.stringify(revData), function(err) {
+    server.mockRedisClient.set(confKey, JSON.stringify(confData), function(err) {
       return cb(err, tokens);
     });
   });
