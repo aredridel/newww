@@ -1,5 +1,6 @@
 var path = require('path');
 var Hapi = require('hapi');
+var RedisMock = require('redis-mock');
 
 module.exports = function(done) {
 
@@ -10,6 +11,8 @@ module.exports = function(done) {
   server.stamp = require("../../lib/stamp")()
   server.gitHead = require("../../lib/git-head")()
   server.methods = require('./server-methods')(server);
+
+  server.mockRedisClient = RedisMock.createClient();
 
   server.register(require('hapi-auth-cookie'), function(err) {
     if (err) {
@@ -38,7 +41,8 @@ module.exports = function(done) {
       require('inert'),
       require('vision'),
       require('../../adapters/bonbon'),
-      hackishMockRedis,
+      require('../../adapters/bonbon'),
+      makeSetRedis(),
       require('hapi-stateless-notifications')
     ], function(err) {
       if (err) {
@@ -70,17 +74,30 @@ module.exports = function(done) {
       });
     });
   });
-};
 
-function hackishMockRedis(server, options, next) {
-  server.ext('onPreHandler', function(request, reply) {
-    request.redis = require('redis-mock').createClient();
-    reply.continue();
-  });
+  function makeSetRedis() {
+    function setRedis(_, __, next) {
+      server.ext('onPreHandler', function(request, reply) {
+        if (!request.redis) {
+          request.redis = server.mockRedisClient;
+        }
+        reply.continue();
+      });
 
-  next();
-}
+      server.on('response', function(request) {
+        if (request.redis && request.redis.end) {
+          request.redis.end();
+        }
+      });
+      next();
+    }
 
-hackishMockRedis.attributes = {
-  name: "hackishMockRedis"
+    setRedis.attributes = {
+      pkg: {
+        name: 'setRedis'
+      }
+    };
+
+    return setRedis;
+  }
 };

@@ -90,6 +90,7 @@
     "prettydate": "0.0.1",
     "qs": "^5.2.0",
     "redis": "^0.12.1",
+    "redis-mock": "^0.4.9",
     "redis-url": "^1.2.0",
     "relative-date": "^1.1.2",
     "repl-client": "~0.3.0",
