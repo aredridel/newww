@@ -1,103 +1,21 @@
 var path = require('path');
 var Hapi = require('hapi');
-var RedisMock = require('redis-mock');
+var inject = require('require-inject');
 
-module.exports = function(done) {
+process.env.REDIS_URL = 'redis://localhost:99999';
+process.env.SESSION_PASSWORD = '12345';
 
-  var metrics = require('../../adapters/metrics')();
-  var server = new Hapi.Server();
-  server.connection();
-
-  server.stamp = require("../../lib/stamp")()
-  server.gitHead = require("../../lib/git-head")()
-  server.methods = require('./server-methods')(server);
-
-  server.mockRedisClient = RedisMock.createClient();
-
-  server.register(require('hapi-auth-cookie'), function(err) {
-    if (err) {
-      throw err;
-    }
-
-    server.app.cache = server.cache({
-      expiresIn: 30,
-      segment: '|sessions' // Adding a '|' prefix to keep the cache keys same as in hapi 7.x and older
-    });
-
-    server.auth.strategy('session', 'cookie', 'required', {
-      password: '12345',
-      redirectTo: '/login'
-    });
-
-    server.register([
-      {
-        register: require('crumb'),
-        options: {
-          cookieOptions: {
-            isSecure: true
-          }
-        }
-      },
-      require('inert'),
-      require('vision'),
-      require('../../adapters/bonbon'),
-      require('../../adapters/bonbon'),
-      makeSetRedis(),
-      require('hapi-stateless-notifications')
-    ], function(err) {
-      if (err) {
-        throw err;
-      }
-
-      server.views({
-        engines: {
-          hbs: require('handlebars')
-        },
-        relativeTo: path.resolve(__dirname, "..", ".."),
-        path: './templates',
-        helpersPath: './templates/helpers',
-        layoutPath: './templates/layouts',
-        partialsPath: './templates/partials',
-        layout: 'default'
-      });
-
-      try {
-        server.route(require('../../routes/index'));
-      } catch (e) {
-        process.nextTick(function() {
-          throw e;
-        });
-      }
-
-      server.start(function() {
-        return done(server);
-      });
-    });
+module.exports = function(cb) {
+  var makeServer = inject.installGlobally('../../lib/startup.js', {
+    redis: require('redis-mock')
   });
 
-  function makeSetRedis() {
-    function setRedis(_, __, next) {
-      server.ext('onPreHandler', function(request, reply) {
-        if (!request.redis) {
-          request.redis = server.mockRedisClient;
-        }
-        reply.continue();
-      });
+  var server = makeServer({
+    connection: null
+  });
 
-      server.on('response', function(request) {
-        if (request.redis && request.redis.end) {
-          request.redis.end();
-        }
-      });
-      next();
-    }
-
-    setRedis.attributes = {
-      pkg: {
-        name: 'setRedis'
-      }
-    };
-
-    return setRedis;
+  if (cb) {
+    server.then(cb);
   }
+  return server;
 };
