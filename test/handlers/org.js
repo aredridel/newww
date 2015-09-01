@@ -14,18 +14,16 @@ var generateCrumb = require("../handlers/crumb.js"),
 var URL = require('url');
 var qs = require('qs');
 
-var requireInject = require('require-inject');
 var redisMock = require('redis-mock');
 var client = redisMock.createClient();
 
 var TokenFacilitator = require('token-facilitator');
 
-before(function(done) {
-  process.env.FEATURE_ORG_BILLING = 'bob';
-  require('../../lib/feature-flags').calculate('org_billing');
-  requireInject.installGlobally('../mocks/server', {
-    redis: redisMock
-  })(function(obj) {
+before({
+  timeout: 5000
+}, function(done) {
+  process.env.FEATURE_ORG_BILLING = 'true';
+  require('../mocks/server')(function(obj) {
     server = obj;
     done();
   });
