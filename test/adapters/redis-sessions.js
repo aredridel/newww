@@ -8,18 +8,10 @@ var Code = require('code'),
   expect = Code.expect,
   redis = require('redis'),
   spawn = require('child_process').spawn,
-  redisSessions = require('../../adapters/redis-sessions'),
-  redisProcess;
-
-before(function(done) {
-  redisProcess = spawn('redis-server');
-  done();
-});
-
-after(function(done) {
-  redisProcess.kill('SIGKILL');
-  done();
-});
+  inject = require('require-inject'),
+  redisSessions = inject.installGlobally('../../adapters/redis-sessions', {
+    redis: require('redis-mock')
+  });
 
 describe('redis-requiring session stuff', function() {
   var client;
