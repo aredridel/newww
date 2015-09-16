@@ -9,6 +9,7 @@ var P = require('bluebird');
 var Request = require('../lib/external-request');
 var userValidate = require('npm-user-validate');
 var utils = require('../lib/utils');
+var VError = require('verror');
 
 var chimp;
 
@@ -425,4 +426,20 @@ User.prototype.getOrgs = function(name, callback) {
       return resolve(body);
     });
   }).nodeify(callback);
+};
+
+User.prototype.listByEmailUncached = function getByEmailUncached(email, cb) {
+  var url = fmt('%s/user/%s', this.host, email);
+  return Request.get({
+    url: url,
+    json: true
+  }).spread(function(res, body) {
+    if (res.statusCode > 399) {
+      err = new VError(new Error(body), fmt('error getting users by email "%s"', email));
+      err.statusCode = res.statusCode;
+      throw err;
+    }
+
+    return body;
+  }).nodeify(cb);
 };
