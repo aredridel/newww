@@ -1,40 +1,69 @@
-{ "total": 4507,
+{
+  "total": 4507,
   "max_score": 1,
-  "hits":
-    [ { "_index": "npm",
-        "_type": "package",
-         "_id": "mongoose-fulltext",
-         "_score": "1",
-         "fields": ["Object"] },
-        { "_index": "npm",
-        "_type": "package",
-         "_id": "mongoose-fulltext",
-         "_score": "1",
-         "fields": ["Object"] },
-        { "_index": "npm",
-        "_type": "package",
-         "_id": "mongoose-fulltext",
-         "_score": "1",
-         "fields": ["Object"] },
-        { "_index": "npm",
-        "_type": "package",
-         "_id": "mongoose-fulltext",
-         "_score": "1",
-         "fields": ["Object"] },
-        { "_index": "npm",
-        "_type": "package",
-         "_id": "mongoose-fulltext",
-         "_score": "1",
-         "fields": ["Object"] },
-        { "_index": "npm",
-        "_type": "package",
-        "_id": "mongoose-fulltext",
-        "_score": "1",
-        "fields": ["Object"] },
-        { "_index": "npm",
-        "_type": "package",
-         "_id": "mongoose-fulltext",
-         "_score": "1",
-         "fields": ["Object"] }
-    ]
- }
+  "hits": [
+    {
+      "_index": "npm",
+      "_type": "package",
+      "_id": "mongoose-fulltext",
+      "_score": "1",
+      "fields": [
+        "Object"
+      ]
+    },
+    {
+      "_index": "npm",
+      "_type": "package",
+      "_id": "mongoose-fulltext",
+      "_score": "1",
+      "fields": [
+        "Object"
+      ]
+    },
+    {
+      "_index": "npm",
+      "_type": "package",
+      "_id": "mongoose-fulltext",
+      "_score": "1",
+      "fields": [
+        "Object"
+      ]
+    },
+    {
+      "_index": "npm",
+      "_type": "package",
+      "_id": "mongoose-fulltext",
+      "_score": "1",
+      "fields": [
+        "Object"
+      ]
+    },
+    {
+      "_index": "npm",
+      "_type": "package",
+      "_id": "mongoose-fulltext",
+      "_score": "1",
+      "fields": [
+        "Object"
+      ]
+    },
+    {
+      "_index": "npm",
+      "_type": "package",
+      "_id": "mongoose-fulltext",
+      "_score": "1",
+      "fields": [
+        "Object"
+      ]
+    },
+    {
+      "_index": "npm",
+      "_type": "package",
+      "_id": "mongoose-fulltext",
+      "_score": "1",
+      "fields": [
+        "Object"
+      ]
+    }
+  ]
+}

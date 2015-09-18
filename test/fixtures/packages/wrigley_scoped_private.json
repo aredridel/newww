@@ -1,5 +1,7 @@
 {
-  "versions": ["0.0.1"],
+  "versions": [
+    "0.0.1"
+  ],
   "name": "@wrigley_the_writer/scoped_private",
   "private": true,
   "description": "@wrigley_the_writer's private package",
@@ -19,11 +21,13 @@
     "email": "bob@example.com",
     "url": null
   },
-  "collaborators": {"bob":{
-    "name": "bob",
-    "email": "bob@example.com",
-    "access": "write"
-  }},
+  "collaborators": {
+    "bob": {
+      "name": "bob",
+      "email": "bob@example.com",
+      "access": "write"
+    }
+  },
   "version": "0.0.1",
   "license": {
     "name": "ISC",
