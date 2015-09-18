@@ -7,11 +7,17 @@ process.env.SESSION_PASSWORD = '12345';
 
 module.exports = function(cb) {
   var makeServer = inject.installGlobally('../../lib/startup.js', {
-    redis: require('@aredridel/redis-mock')
+    redis: require('redis-mock')
   });
 
   var server = makeServer({
     connection: null
+  });
+
+  server.then(function(server) {
+    server.on('close', function() {
+      console.warn(server);
+    });
   });
 
   if (cb) {

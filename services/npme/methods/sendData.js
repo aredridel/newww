@@ -6,7 +6,10 @@ module.exports = function(formGuid, data, callback) {
     .replace(":portal_id", process.env.HUBSPOT_PORTAL_ID)
     .replace(":form_guid", formGuid);
 
-  request.post(hubspot, function(er, resp) {
+  request.post(hubspot, function(err, resp) {
+    if (err) {
+      return callback(err);
+    }
 
     // we can ignore 302 responses
     if (resp.statusCode === 204 || resp.statusCode === 302) {
