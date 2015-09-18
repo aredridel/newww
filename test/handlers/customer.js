@@ -13,14 +13,9 @@ var generateCrumb = require("../handlers/crumb.js"),
   server,
   fixtures = require('../fixtures');
 
-var requireInject = require('require-inject');
-var redisMock = require('redis-mock');
-
 before(function(done) {
   process.env.FEATURE_ORG_BILLING = 'true';
-  requireInject.installGlobally('../mocks/server', {
-    redis: redisMock
-  })(function(obj) {
+  require('../mocks/server')(function(obj) {
     server = obj;
     done();
   });

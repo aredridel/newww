@@ -6,11 +6,10 @@ var Code = require('code'),
   after = lab.after,
   it = lab.test,
   expect = Code.expect,
-  redis = require('redis'),
   spawn = require('child_process').spawn,
   inject = require('require-inject'),
   redisSessions = inject.installGlobally('../../adapters/redis-sessions', {
-    redis: require('redis-mock')
+    redis: require('@aredridel/redis-mock')
   });
 
 describe('redis-requiring session stuff', function() {
@@ -20,7 +19,7 @@ describe('redis-requiring session stuff', function() {
   var prefix = "hapi-cache:%7Csessions:";
 
   before(function(done) {
-    client = require("redis-url").connect();
+    client = require("@aredridel/redis-mock").connect();
     client.flushdb();
     client.on("error", function(err) {
       console.log("Error " + err);
