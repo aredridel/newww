@@ -130,14 +130,14 @@ var publicRoutes = [
   }, {
     path: "/enterprise-start-signup",
     method: "POST",
-    handler: require('../facets/enterprise/show-ula')
+    handler: require('../handlers/enterprise').startSignup
   }, {
     path: "/enterprise-contact-me",
-    method: "POST",
+    method: ["POST", "GET"],
     handler: require('../facets/enterprise/show-contact-me')
   }, {
     path: "/enterprise-trial-signup",
-    method: "POST",
+    method: ["POST", "GET"],
     handler: require('../facets/enterprise/show-trial-signup')
   }, {
     path: "/enterprise-verify",
