@@ -12,6 +12,8 @@ var userValidate = require('npm-user-validate');
 var USER_API = process.env.USER_API || 'https://user-api-example.com';
 var utils = require('../lib/utils');
 var VError = require('verror');
+var url = require('url');
+var urltemplate = require('url-template');
 
 var chimp;
 
@@ -283,7 +285,7 @@ User.prototype.getStars = function(name, callback) {
 };
 
 User.prototype.login = function(loginInfo, callback) {
-  var url = fmt('%s/user/%s/login', USER_API, loginInfo.name);
+  var url = url.resolve(USER_API, urltemplate('/user/{name}/login').expand(loginInfo.name));
 
   return new P(function(resolve, reject) {
 

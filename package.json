@@ -109,6 +109,7 @@
     "tipsy-browserify": "^1.0.0",
     "token-facilitator": "^2.2.0",
     "truncate": "^2.0.0",
+    "url-template": "^2.0.6",
     "validate-npm-package-license": "^3.0.0",
     "validate-npm-package-name": "^2.2.0",
     "verror": "^1.6.1",
