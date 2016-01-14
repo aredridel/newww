@@ -1,6 +1,7 @@
 var omit = require("lodash").omit;
 var Collaborator = require("../agents/collaborator");
 var Package = require("../agents/package");
+var VError = require('verror');
 
 module.exports = function(request, reply) {
 
@@ -16,19 +17,17 @@ module.exports = function(request, reply) {
   var promise = Package(request.loggedInUser)
     .get(request.packageName)
     .catch(function(err) {
-      request.logger.error("unable to get package " + request.packageName);
-      request.logger.error(err);
 
       switch (err.statusCode) {
         case 402:
           reply.redirect('/settings/billing?package=' + request.packageName);
           break;
         case 404:
+          request.logger.error(new VError("Package not found '%s'", request.packageName));
           reply.view('errors/not-found').code(404);
           break;
         default:
-          err.statusCode = 500;
-          reply(err);
+          reply(new VError(err, "unable to get package '%s'", request.packageName));
       }
       return promise.cancel();
     })
@@ -37,9 +36,7 @@ module.exports = function(request, reply) {
       return Collaborator(loggedInUser && loggedInUser.name).list(cpackage.name);
     })
     .catch(function(err) {
-      request.logger.error('unable to get collaborators for package', request.packageName);
-      request.logger.error(err);
-      reply(err);
+      reply(new VError(err, "unable to get collaborators for package '%s'", request.packageName));
       return promise.cancel();
     })
     .then(function(collaborators) {
@@ -63,9 +60,7 @@ module.exports = function(request, reply) {
         context.paymentRequiredToTogglePrivacy = true;
         request.customer.getStripeData(function(err, customer) {
           if (err && err.statusCode !== 404) {
-            request.logger.error("error fetching customer data for user " + loggedInUser.name);
-            request.logger.error(err);
-            return reply.view('errors/internal', context).code(500);
+            return reply(new VError(err, "error fetching customer data for user '%s'" + loggedInUser.name));
           } else {
             if (customer) {
               context.paymentRequiredToTogglePrivacy = false;
@@ -80,10 +75,6 @@ module.exports = function(request, reply) {
 
     })
     .catch(function(err) {
-      request.logger.error('unable to verify access for package', request.packageName);
-      request.logger.error(err);
-      reply(err);
-      return promise.cancel();
+      reply(new VError(err, "unable to verify access for package '%s'", request.packageName));
     });
-
 };
