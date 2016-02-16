@@ -1,5 +1,5 @@
 {
-  "name": "newww",
+  "name": "npm-website",
   "version": "4.1.0",
   "description": "The npmjs.com website",
   "main": "server.js",
